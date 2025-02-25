@@ -1,0 +1,35 @@
+PS C:\Users\offic\OneDrive\Desktop\Work Env\MLOps\experiment_tracking> tree /F
+Folder PATH listing for volume OS
+Volume serial number is 2A58-25D9
+C:.
+│   .gitignore
+│   Dockerfile
+│   dvc.yaml
+│   README.md
+│   requirements.txt
+│
+├───data
+│   ├───processed
+│   │       X.csv
+│   │       y.csv
+│   │
+│   └───raw
+│           Loan_Data.csv
+│           test_data.csv
+│
+├───logs
+│       app.log
+│
+└───src
+    │   .env
+    │   config.py
+    │   data_warehouse_connect.py
+    │   inference.py
+    │   logger.py
+    │   preprocess.py
+    │   train.py
+    │
+    └───__pycache__
+            config.cpython-310.pyc
+            data_warehouse_connect.cpython-310.pyc
+            logger.cpython-310.pyc

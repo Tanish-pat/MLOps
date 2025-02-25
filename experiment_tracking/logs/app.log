@@ -37,3 +37,12 @@
 2025-02-25 16:36:49 - INFO - Data split: 491 training rows, 123 test rows.
 2025-02-25 16:36:54 - INFO - Model trained with accuracy: 0.7642276422764228
 2025-02-25 16:36:54 - INFO - Model saved at models/loan_approval_model.pkl
+2025-02-25 19:10:43 - INFO - Connected to MongoDB successfully.
+2025-02-25 19:10:45 - INFO - Data fetched from MongoDB: 614 rows, 15 columns.
+2025-02-25 19:10:46 - INFO - Missing values handled.
+2025-02-25 19:10:48 - INFO - Categorical variables encoded.
+2025-02-25 19:10:48 - INFO - Preprocessing complete. Processed data saved successfully!
+2025-02-25 19:10:59 - INFO - Data loaded: 614 rows, 20 features.
+2025-02-25 19:10:59 - INFO - Data split: 491 training rows, 123 test rows.
+2025-02-25 19:11:06 - INFO - Model trained with accuracy: 0.7642276422764228
+2025-02-25 19:11:06 - INFO - Model saved at models/loan_approval_model.pkl
