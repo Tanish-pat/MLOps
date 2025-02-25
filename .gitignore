@@ -1,2 +1,14 @@
-venv
+# Ignore all __pycache__ directories
 **/__pycache__/
+__pycache__/
+
+# Ignore virtual environments
+venv/
+.venv/
+
+# Ignore environment variable files
+*.env
+
+# Ignore experiment tracking artifacts
+experiment_tracking/mlruns/
+experiment_tracking/models/
