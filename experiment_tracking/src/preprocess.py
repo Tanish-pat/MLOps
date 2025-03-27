@@ -6,10 +6,14 @@ from data_warehouse_connect import connect_mongo
 from logger import logger  # Import logger
 
 # Connect to the database
-db = connect_mongo()
-if db is None:
-    logger.error("Database connection failed. Exiting preprocessing.")
-    raise Exception("Database connection failed.")
+"""
+Issue: connect_mongo() runs immediately, making the script dependent on MongoDB.
+Fix: Use a context manager:
+"""
+with connect_mongo() as db:
+    if db is None:
+        logger.error("Database connection failed. Exiting preprocessing.")
+        raise Exception("Database connection failed.")
 
 # Fetch data
 train_collection = db["train"]

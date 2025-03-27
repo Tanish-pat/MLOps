@@ -7,3 +7,5 @@ numpy
 mlflow
 scikit-learn
 uvicorn
+logger
+logging
