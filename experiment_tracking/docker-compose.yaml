@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  loan-api:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    deploy:
+      replicas: 3  # Scale to 3 containers
+    networks:
+      - loan-net
+    expose:
+      - "8000"  # Internal port for communication
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8000:80"  # Expose API on port 8000
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Mount Nginx config
+    depends_on:
+      - loan-api
+    networks:
+      - loan-net
+
+networks:
+  loan-net:
+    driver: bridge

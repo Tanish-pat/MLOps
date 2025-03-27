@@ -1,21 +1,24 @@
-# Use an official Python image
-FROM python:3.10
+# Use an official Python image as base
+FROM python:3.10-slim AS base
 
-# Set the working directory inside the container
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy only the necessary files first (to optimize build caching)
+# Copy only requirements first to leverage Docker's caching
 COPY requirements.txt ./
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Create a virtual environment & install dependencies inside it
+RUN python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project into the container
+# Set the virtual environment as default
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Now copy the rest of the project
 COPY . .
 
-# Run preprocessing and training scripts
-RUN python src/preprocess.py && \
-    python src/train.py
+# Use a volume for storing processed data & models outside the container
+VOLUME ["/app/data", "/app/models"]
 
 # Expose FastAPI port
 EXPOSE 8000

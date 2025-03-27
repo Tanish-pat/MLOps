@@ -1,13 +1,28 @@
 import pandas as pd
-import mlflow
-import mlflow.sklearn
+import mlflow  # type: ignore
+import mlflow.sklearn # type: ignore
 import os
+import pathlib
 import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-from mlflow.models.signature import infer_signature
+from mlflow.models.signature import infer_signature # type: ignore
 from logger import logger  # Import logger
+
+# Define BASE_DIR dynamically
+BASE_DIR = pathlib.Path(__file__).resolve().parent
+ARTIFACT_DIR = BASE_DIR / "mlruns"
+
+# Ensure the artifact directory exists
+ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
+
+# Convert path to MLflow-compatible URI
+mlflow_tracking_uri = ARTIFACT_DIR.as_uri()  # Converts to file://C:/Users/... format
+
+# Set MLflow tracking URI
+mlflow.set_tracking_uri(mlflow_tracking_uri)
+logger.info(f"MLflow tracking URI set to: {mlflow_tracking_uri}")
 
 # Load processed data
 X = pd.read_csv("data/processed/X.csv")

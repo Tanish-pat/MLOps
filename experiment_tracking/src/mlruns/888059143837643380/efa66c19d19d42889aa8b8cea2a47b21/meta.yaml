@@ -1,0 +1,15 @@
+artifact_uri: file:///mnt/c/Users/offic/OneDrive/Desktop/Work Env/mlops/experiment_tracking/src/mlruns/888059143837643380/efa66c19d19d42889aa8b8cea2a47b21/artifacts
+end_time: 1743061476546
+entry_point_name: ''
+experiment_id: '888059143837643380'
+lifecycle_stage: active
+run_id: efa66c19d19d42889aa8b8cea2a47b21
+run_name: zealous-moose-29
+run_uuid: efa66c19d19d42889aa8b8cea2a47b21
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1743061437159
+status: 3
+tags: []
+user_id: tanish

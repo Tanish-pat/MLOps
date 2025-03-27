@@ -35,11 +35,11 @@ class LoanApplication(BaseModel):
     Property_Area_Urban: float
 
 @app.get("/")
-def home():
+async def home():
     return {"message": "Loan Approval Model is Running!"}
 
-@app.post("/predict/")
-def predict(data: LoanApplication):
+@app.post("/predict")
+async def predict(data: LoanApplication):
     try:
         df = pd.DataFrame([data.dict()])
         df.rename(columns={"Dependents_3_plus": "Dependents_3+", "Education_Not_Graduate": "Education_Not Graduate"}, inplace=True)

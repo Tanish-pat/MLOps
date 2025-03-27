@@ -12,3 +12,4 @@ venv/
 # Ignore experiment tracking artifacts
 experiment_tracking/mlruns/
 experiment_tracking/models/
+experiment_tracking/data/
