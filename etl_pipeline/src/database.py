@@ -14,6 +14,7 @@ def connect_mongo():
         client = pymongo.MongoClient(MONGO_URI)
         db = client["general_data"]
         logger.info("Connected to MongoDB.")
+        print("Connected to MongoDB.")
         return db
     except Exception as e:
         logger.error(f"MongoDB connection failed: {e}")

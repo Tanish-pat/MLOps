@@ -33,13 +33,16 @@ def load_data_to_mongo(dataframes):
                 upsert=True,
             )
         logger.info(f"Successfully upserted {len(df)} records into {name} collection in MongoDB.")
+        print(f"Successfully upserted {len(df)} records into {name} collection in MongoDB.")
 
 if __name__ == "__main__":
     from extract import extract_data
     from transform import transform_data
 
     logger.info("Starting ETL Pipeline...")
+    print("Starting ETL Pipeline...")
     dataframes = extract_data()
     transformed_data = transform_data(dataframes)
     load_data_to_mongo(transformed_data)
     logger.info("ETL Pipeline completed successfully!")
+    print("ETL Pipeline completed successfully!")

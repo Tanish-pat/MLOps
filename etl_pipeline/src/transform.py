@@ -22,4 +22,5 @@ def transform_data(dataframes):
                     mean_value = df[column].mean()
                     df[column] = df[column].fillna(mean_value)
         logger.info(f"Transformed data for {name}: filled missing values.")
+        print(f"Transformed data for {name}: filled missing values.")
     return dataframes
