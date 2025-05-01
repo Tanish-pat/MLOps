@@ -1,27 +1,28 @@
-# Use an official Python image as base
-FROM python:3.10-slim AS base
-
-# Set working directory inside the container
+# Stage 1: Preprocessing
+FROM python:3.12-slim AS stage1
 WORKDIR /app
+RUN mkdir -p data model
+COPY requirements/stage_1.txt ./
+RUN pip install --no-cache-dir -r stage_1.txt
+COPY src/ src/
+RUN python src/preprocess.py
 
-# Copy only requirements first to leverage Docker's caching
-COPY requirements.txt ./
+# Stage 2: Training
+FROM python:3.12-slim AS stage2
+WORKDIR /app
+COPY requirements/stage_2.txt ./
+RUN pip install --no-cache-dir -r stage_2.txt
+COPY --from=stage1 /app/data/X.csv /app/data/y.csv /app/data/
+COPY src/ src/
+RUN python src/train.py
 
-# Create a virtual environment & install dependencies inside it
-RUN python -m venv /opt/venv && \
-    /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
-
-# Set the virtual environment as default
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Now copy the rest of the project
-COPY . .
-
-# Use a volume for storing processed data & models outside the container
-VOLUME ["/app/data", "/app/models"]
-
-# Expose FastAPI port
-EXPOSE 8000
-
-# Start FastAPI server
-CMD ["uvicorn", "src.inference:app", "--host", "0.0.0.0", "--port", "8000"]
+# Stage 3: Inference
+FROM python:3.12-slim AS stage3
+WORKDIR /app
+RUN mkdir -p model
+COPY requirements/stage_3.txt ./
+RUN pip install --no-cache-dir -r stage_3.txt
+COPY src/ src/
+COPY --from=stage2 /app/model/model.csv /app/model/scaler.csv /app/model/
+EXPOSE 5000
+CMD ["python", "-m", "flask", "--app", "src.inference", "run", "--host=0.0.0.0", "--debug"]

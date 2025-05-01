@@ -1,6 +1,8 @@
 """
-Configuration file for the project
+    Configuration module for the experiment tracking system.
+    This module loads environment variables from a .env file and provides access to the MongoDB URI.
 """
+
 import os
 from dotenv import load_dotenv
 

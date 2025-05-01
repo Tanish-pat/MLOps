@@ -1,4 +1,0 @@
-docker ps -a
-docker rm $(docker ps -aq)
-docker build -t loan_model .
-docker run -p 8000:8000 loan_model

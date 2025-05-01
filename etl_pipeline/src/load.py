@@ -2,7 +2,6 @@
     integrate logging, validation, and database logic
 """
 
-import pandas as pd
 from database import connect_mongo
 from logger import get_logger
 import hashlib

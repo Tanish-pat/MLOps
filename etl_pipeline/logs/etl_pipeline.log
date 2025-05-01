@@ -52,3 +52,18 @@
 2025-04-23 14:44:46 - INFO - Successfully upserted 367 records into test collection in MongoDB.
 2025-04-23 14:45:07 - INFO - Successfully upserted 614 records into train collection in MongoDB.
 2025-04-23 14:45:07 - INFO - ETL Pipeline completed successfully!
+2025-04-30 16:40:13 - INFO - Extracted 367 records from test.csv.
+2025-04-30 16:40:13 - INFO - Extracted 614 records from train.csv.
+2025-04-30 16:40:13 - WARNING - Data contains missing values.
+2025-04-30 16:40:13 - INFO - Data validation passed. 367 records ready for loading.
+2025-04-30 16:40:13 - WARNING - Data contains missing values.
+2025-04-30 16:40:13 - INFO - Data validation passed. 614 records ready for loading.
+2025-04-30 16:40:20 - INFO - Starting ETL Pipeline...
+2025-04-30 16:40:20 - INFO - Extracted 367 records from test.csv.
+2025-04-30 16:40:20 - INFO - Extracted 614 records from train.csv.
+2025-04-30 16:40:20 - INFO - Transformed data for test: filled missing values.
+2025-04-30 16:40:20 - INFO - Transformed data for train: filled missing values.
+2025-04-30 16:40:22 - INFO - Connected to MongoDB.
+2025-04-30 16:40:44 - INFO - Successfully upserted 367 records into test collection in MongoDB.
+2025-04-30 16:41:24 - INFO - Successfully upserted 614 records into train collection in MongoDB.
+2025-04-30 16:41:24 - INFO - ETL Pipeline completed successfully!

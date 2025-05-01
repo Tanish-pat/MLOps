@@ -1,0 +1,9 @@
+docker compose up --build -d
+docker push tanish688/experiment_tracking-preprocess:latest
+docker push tanish688/experiment_tracking-train:latest
+docker push tanish688/experiment_tracking-inference:latest
+dokcer image prune -f
+kubectl apply -f k8s/inference-deployment.yaml
+kubectl apply -f k8s/inference-service.yaml
+minikube ip
+runner.txt

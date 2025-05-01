@@ -17,7 +17,6 @@ setup:
 	@echo "Setting up directories..."
 	@mkdir -p logs
 	@mkdir -p data/raw
-	@mkdir -p data/processed
 	@echo "Directory structure ready."
 
 clean:

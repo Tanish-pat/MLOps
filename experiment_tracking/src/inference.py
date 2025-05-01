@@ -1,53 +1,34 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-import joblib
+"""
+    Inference script for the model.
+    This script loads the model and scaler parameters, and provides an endpoint for making predictions.
+"""
+
+from flask import Flask, request, jsonify
 import pandas as pd
-import os
-import logging
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-model = joblib.load(os.path.join(BASE_DIR, "../models/loan_approval_model.pkl"))
-app = FastAPI()
+app = Flask(__name__)
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+model_data = pd.read_csv("model/model.csv")
+scaler_data = pd.read_csv("model/scaler.csv")
 
-class LoanApplication(BaseModel):
-    ApplicantIncome: float = Field(..., gt=0, description="Must be positive")
-    CoapplicantIncome: float = Field(..., ge=0, description="Must be zero or positive")
-    Credit_History: float = Field(..., ge=0, description="Must be zero or positive")
-    LoanAmount: float = Field(..., gt=0, description="Must be positive")
-    Loan_Amount_Term: float = Field(..., gt=0, description="Must be positive")
-    Gender_Female: float
-    Gender_Male: float
-    Married_No: float
-    Married_Yes: float
-    Dependents_0: float
-    Dependents_1: float
-    Dependents_2: float
-    Dependents_3_plus: float
-    Education_Graduate: float
-    Education_Not_Graduate: float
-    Self_Employed_No: float
-    Self_Employed_Yes: float
-    Property_Area_Rural: float
-    Property_Area_Semiurban: float
-    Property_Area_Urban: float
+intercept = model_data.loc[model_data["Feature"] == "Intercept", "Coefficient"].values[0]
+coefficients = model_data.loc[model_data["Feature"] != "Intercept"].set_index("Feature")["Coefficient"]
 
-@app.get("/")
-async def home():
-    return {"message": "Loan Approval Model is Running!"}
+scaler_mean = scaler_data.set_index("Feature")["Mean"]
+scaler_var = scaler_data.set_index("Feature")["Var"]
 
-@app.post("/predict")
-async def predict(data: LoanApplication):
-    try:
-        df = pd.DataFrame([data.dict()])
-        df.rename(columns={"Dependents_3_plus": "Dependents_3+", "Education_Not_Graduate": "Education_Not Graduate"}, inplace=True)
-        logger.info(f"Received input: {data.dict()}")
-        prediction = model.predict(df)
-        logger.info(f"Prediction: {int(prediction[0])}")
-        return {"loan_approval": int(prediction[0])}
+@app.route("/predict", methods=["POST"])
+def predict():
+    data = request.get_json()
+    if isinstance(data, dict):
+        data = [data]
+    df = pd.DataFrame(data)
+    df.rename(columns={"Dependents_3_plus": "Dependents_3+", "Education_Not_Graduate": "Education_Not Graduate"}, inplace=True)
+    df = df[coefficients.index]
+    df = (df - scaler_mean) / scaler_var.pow(0.5)
+    linear_output = df.mul(coefficients).sum(axis=1) + intercept
+    predictions = (linear_output > 0).astype(int).tolist()
+    return jsonify(predictions)
 
-    except Exception as e:
-        logger.error(f"Prediction error: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

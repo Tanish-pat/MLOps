@@ -1,19 +1,18 @@
 """
-Handles database interactions separately
+    This module connects to a MongoDB database using the pymongo library.
+    It retrieves the MongoDB URI from a configuration file and establishes a connection to the database.
 """
+
 import pymongo
 from config import MONGO_URI
-from logger import logger  # Import logger
 
 def connect_mongo():
     """Connects to MongoDB and returns the database."""
     try:
         client = pymongo.MongoClient(MONGO_URI)
         db = client["general_data"]
-        logger.info("Connected to MongoDB successfully.")
         return db
     except Exception as e:
-        logger.error(f"MongoDB connection failed: {e}")
         return None
 
 # Only connect when this script is run directly

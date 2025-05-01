@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inference
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inference
+  template:
+    metadata:
+      labels:
+        app: inference
+    spec:
+      containers:
+        - name: inference
+          image: tanish688/experiment_tracking-inference:latest
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: model-volume
+              mountPath: /model
+            - name: logs-volume
+              mountPath: /logs
+      volumes:
+        - name: model-volume
+          emptyDir: {}
+        - name: logs-volume
+          emptyDir: {}

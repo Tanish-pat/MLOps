@@ -1,58 +1,37 @@
+"""
+    Preprocess the data and save it to CSV files.
+    This script connects to a MongoDB database, retrieves the training data, preprocesses it, and saves the features and target variable to CSV files.
+"""
+
 import pandas as pd
-import numpy as np
 import os
 from data_warehouse_connect import connect_mongo
-from logger import logger  # Import logger
 
-# Connect to MongoDB
 db = connect_mongo()
-
 if db is None:
-    logger.error("Database connection failed. Exiting preprocessing.")
     raise Exception("Database connection failed.")
 try:
-    # Fetch data
     train_collection = db["train"]
     data = pd.DataFrame(list(train_collection.find())).copy()
-    logger.info(f"Data fetched from MongoDB: {data.shape[0]} rows, {data.shape[1]} columns.")
-
-    # Drop Loan_ID
     if "Loan_ID" in data.columns:
         data.drop(columns=["Loan_ID"], inplace=True)
-
-    # Handle missing values safely
-    data.loc[:, "LoanAmount"] = data["LoanAmount"].fillna(data["LoanAmount"].median())
-    data.loc[:, "Loan_Amount_Term"] = data["Loan_Amount_Term"].fillna(data["Loan_Amount_Term"].median())
-    data.loc[:, "Credit_History"] = data["Credit_History"].fillna(data["Credit_History"].mode()[0])
-    logger.info("Missing values handled.")
-
-    # Encode categorical variables
-    from sklearn.preprocessing import OneHotEncoder
+    data["LoanAmount"] = data["LoanAmount"].fillna(data["LoanAmount"].median())
+    data["Loan_Amount_Term"] = data["Loan_Amount_Term"].fillna(data["Loan_Amount_Term"].median())
+    data["Credit_History"] = data["Credit_History"].fillna(data["Credit_History"].mode()[0])
     categorical_cols = ["Gender", "Married", "Dependents", "Education", "Self_Employed", "Property_Area"]
-    encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
-
-    encoded_features = encoder.fit_transform(data[categorical_cols])
-    encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names_out(categorical_cols))
-    logger.info("Categorical variables encoded.")
-
-    # Final preprocessing
-    data.drop(columns=categorical_cols, inplace=True)
-    data = pd.concat([data, encoded_df], axis=1)
-
-    # Convert Loan_Status to numerical
+    data = pd.get_dummies(data, columns=categorical_cols, drop_first=False)
     if "Loan_Status" in data.columns:
-        data.loc[:, "Loan_Status"] = data["Loan_Status"].map({"Y": 1, "N": 0})
+        data["Loan_Status"] = data["Loan_Status"].map({"Y": 1, "N": 0})
 
-    # Save processed data
-    output_dir = "data/processed"
+    output_dir = "data"
     os.makedirs(output_dir, exist_ok=True)
+
     X = data.drop(columns=["_id", "_hash", "Loan_Status"], errors="ignore")
-    y = data["Loan_Status"]
+    y = data["Loan_Status"] if "Loan_Status" in data.columns else None
 
     X.to_csv(f"{output_dir}/X.csv", index=False)
-    y.to_csv(f"{output_dir}/y.csv", index=False)
-    logger.info("Preprocessing complete. Processed data saved successfully!")
+    if y is not None:
+        y.to_csv(f"{output_dir}/y.csv", index=False)
 
 except Exception as e:
-    logger.error(f"Error in preprocessing: {e}")
     raise

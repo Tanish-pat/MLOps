@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  preprocess:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: stage1
+    image: tanish688/experiment_tracking-preprocess:latest
+    container_name: ml-preprocess
+    volumes:
+      - ./data:/app/data
+    command: ["python", "src/preprocess.py"]
+
+  train:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: stage2
+    image: tanish688/experiment_tracking-train:latest
+    container_name: ml-train
+    volumes:
+      - ./data:/app/data
+      - ./model:/app/model
+    depends_on:
+      - preprocess
+    command: ["python", "src/train.py"]
+
+  inference:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: stage3
+    image: tanish688/experiment_tracking-inference:latest
+    container_name: ml-inference
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./model:/app/model
+    depends_on:
+      - train
+    command: ["python", "-m", "flask", "--app", "src.inference", "run", "--host=0.0.0.0", "--debug"]

@@ -1,5 +1,5 @@
 """
-Configuration file for the project
+    Configuration file for the project
 """
 
 import os
